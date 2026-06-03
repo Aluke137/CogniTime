@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CogniTime - Plataforma de Estudos Inteligente</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <div class="logo-icon">🧠</div>
+                <span class="logo-text">CogniTime</span>
+            </div>
+            <div class="navbar-menu">
+                <button class="nav-btn" data-page="home">Início</button>
+                <button class="nav-btn" data-page="dashboard">Dashboard</button>
+                <button class="nav-btn" data-page="timer">Timer</button>
+                <button class="nav-btn" data-page="materials">Materiais</button>
+                <button class="nav-btn" data-page="quizzes">Simulados</button>
+                <button class="nav-btn" data-page="flashcards">Flashcards</button>
+                <button class="nav-btn" data-page="review">Revisão</button>
+                <div class="user-menu">
+                    <span class="user-name" id="userName"></span>
+                    <button class="nav-btn logout-btn" id="logoutBtn">Sair</button>
+                </div>
+            </div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Home Page -->
+        <section id="home-page" class="page active">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1>Estude com Inteligência e Foco</h1>
+                    <p>O CogniTime combina o método Pomodoro, revisão espaçada e IA para transformar seus materiais em simulados, flashcards e um cronograma personalizado de estudos.</p>
+                    <button class="btn btn-primary" id="startBtn">Começar Agora</button>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">⏱️</div>
+                        <h3>Timer Pomodoro</h3>
+                        <p>Sessões configuráveis com pausas personalizadas</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🤖</div>
+                        <h3>Simulados com IA</h3>
+                        <p>Questões geradas automaticamente</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎴</div>
+                        <h3>Flashcards</h3>
+                        <p>Cartões de revisão inteligentes</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📅</div>
+                        <h3>Revisão Espaçada</h3>
+                        <p>Cronograma dinâmico personalizado</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Page -->
+        <section id="dashboard-page" class="page">
+            <div class="dashboard-header">
+                <h1>Dashboard</h1>
+                <p id="greeting"></p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-content">
+                        <p class="stat-label">Minutos Hoje</p>
+                        <p class="stat-value" id="todayMinutes">0</p>
+                        <p class="stat-sub" id="todaySessions">0 sessões</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-content">
+                        <p class="stat-label">Desempenho Médio</p>
+                        <p class="stat-value" id="avgScore">0%</p>
+                        <p class="stat-sub">nos simulados</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-content">
+                        <p class="stat-label">Revisões Pendentes</p>
+                        <p class="stat-value" id="pendingReviews">0</p>
+                        <p class="stat-sub">próximos 7 dias</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-content">
+                        <p class="stat-label">Materiais</p>
+                        <p class="stat-value" id="totalMaterials">0</p>
+                        <p class="stat-sub">enviados</p>
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h2>Minutos de Estudo (Últimos 7 dias)</h2>
+                    <canvas id="studyChart"></canvas>
+                </div>
+                <div class="dashboard-card">
+                    <h2>Próximas Revisões</h2>
+                    <div id="upcomingReviews" class="reviews-list">
+                        <p class="empty-state">Nenhuma revisão pendente</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timer Page -->
+        <section id="timer-page" class="page">
+            <div class="timer-container">
+                <div class="timer-header">
+                    <h1>Timer Pomodoro</h1>
+                    <div class="timer-settings">
+                        <label>Duração da sessão (min):</label>
+                        <input type="number" id="studyDuration" min="10" max="120" value="25">
+                        <label>Pausa curta (min):</label>
+                        <input type="number" id="shortBreak" min="1" max="30" value="5">
+                    </div>
+                </div>
+                <div class="timer-display">
+                    <div class="timer-circle">
+                        <svg class="timer-svg" viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="95" class="timer-bg"></circle>
+                            <circle cx="100" cy="100" r="95" class="timer-progress"></circle>
+                        </svg>
+                        <div class="timer-text">
+                            <span id="timerDisplay">25:00</span>
+                            <p id="timerLabel">Sessão de Estudo</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="timer-controls">
+                    <button class="btn btn-primary" id="startTimerBtn">Iniciar</button>
+                    <button class="btn btn-secondary" id="pauseTimerBtn" disabled>Pausar</button>
+                    <button class="btn btn-secondary" id="resetTimerBtn">Reiniciar</button>
+                </div>
+                <div class="session-counter">
+                    <p>Sessões completadas hoje: <span id="sessionsCount">0</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Materials Page -->
+        <section id="materials-page" class="page">
+            <div class="materials-container">
+                <h1>Meus Materiais</h1>
+                <div class="upload-section">
+                    <div class="upload-box" id="uploadBox">
+                        <p class="upload-icon">📁</p>
+                        <p class="upload-text">Arraste arquivos aqui ou clique para selecionar</p>
+                        <p class="upload-sub">Suporta PDF, TXT, MD</p>
+                        <input type="file" id="fileInput" accept=".pdf,.txt,.md" hidden>
+                    </div>
+                    <div class="upload-form">
+                        <input type="text" id="materialTitle" placeholder="Título do material">
+                        <input type="text" id="materialSubject" placeholder="Matéria/Disciplina">
+                        <button class="btn btn-primary" id="uploadBtn" disabled>Enviar Material</button>
+                    </div>
+                </div>
+                <div class="materials-list" id="materialsList">
+                    <p class="empty-state">Nenhum material enviado ainda</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quizzes Page -->
+        <section id="quizzes-page" class="page">
+            <div class="quizzes-container">
+                <h1>Simulados</h1>
+                <div class="quizzes-list" id="quizzesList">
+                    <p class="empty-state">Nenhum simulado disponível. Envie um material primeiro!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz Session Page -->
+        <section id="quiz-session-page" class="page">
+            <div class="quiz-session-container">
+                <div class="quiz-header">
+                    <h1 id="quizTitle">Simulado</h1>
+                    <div class="quiz-progress">
+                        <span id="questionCounter">1/5</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quiz-content" id="quizContent">
+                    <!-- Conteúdo do quiz será inserido aqui -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Flashcards Page -->
+        <section id="flashcards-page" class="page">
+            <div class="flashcards-container">
+                <h1>Flashcards</h1>
+                <div class="flashcards-list" id="flashcardsList">
+                    <p class="empty-state">Nenhum flashcard disponível</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Review Page -->
+        <section id="review-page" class="page">
+            <div class="review-container">
+                <h1>Revisão Espaçada</h1>
+                <div class="review-calendar" id="reviewCalendar">
+                    <p class="empty-state">Nenhuma revisão agendada</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal para Quiz -->
+    <div id="quizModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Auth Page -->
+    <section id="auth-page" class="page active">
+        <div class="auth-container">
+            <!-- Login Form -->
+            <div class="auth-form" id="loginForm">
+                <div class="auth-header">
+                    <div class="auth-logo">🧠</div>
+                    <h1>CogniTime</h1>
+                    <p>Estude com inteligência</p>
+                </div>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Senha</label>
+                        <input type="password" id="loginPassword" placeholder="Sua senha" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
+                </form>
+                <p class="auth-toggle">Não tem conta? <a href="#" onclick="toggleAuthForm(event)">Registre-se</a></p>
+                <div id="loginMessage" class="auth-message"></div>
+            </div>
+
+            <!-- Register Form -->
+            <div class="auth-form" id="registerForm" style="display: none;">
+                <div class="auth-header">
+                    <div class="auth-logo">🧠</div>
+                    <h1>CogniTime</h1>
+                    <p>Crie sua conta</p>
+                </div>
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="registerName">Nome Completo</label>
+                        <input type="text" id="registerName" placeholder="Seu nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Senha</label>
+                        <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPasswordConfirm">Confirmar Senha</label>
+                        <input type="password" id="registerPasswordConfirm" placeholder="Confirme a senha" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Registrar</button>
+                </form>
+                <p class="auth-toggle">Já tem conta? <a href="#" onclick="toggleAuthForm(event)">Faça login</a></p>
+                <div id="registerMessage" class="auth-message"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="auth.js"></script>
+    <script src="storage.js"></script>
+    <script src="ai.js"></script>
+    <script src="timer.js"></script>
+    <script src="materials.js"></script>
+    <script src="quizzes.js"></script>
+    <script src="flashcards.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Verificar autenticação ao carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            if (auth.isAuthenticated()) {
+                const user = auth.getCurrentUser();
+                document.getElementById('userName').textContent = user.name;
+                document.getElementById('auth-page').classList.remove('active');
+                document.getElementById('home-page').classList.add('active');
+            } else {
+                document.getElementById('auth-page').classList.add('active');
+            }
+        });
+
+        // Alternar entre login e registro
+        function toggleAuthForm(e) {
+            e.preventDefault();
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
+            registerForm.style.display = registerForm.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Handle Login
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const messageDiv = document.getElementById('loginMessage');
+
+            const result = auth.login(email, password);
+            
+            if (result.success) {
+                messageDiv.className = 'auth-message success';
+                messageDiv.textContent = result.message;
+                setTimeout(() => {
+                    const user = auth.getCurrentUser();
+                    document.getElementById('userName').textContent = user.name;
+                    document.getElementById('auth-page').classList.remove('active');
+                    document.getElementById('home-page').classList.add('active');
+                    document.getElementById('loginEmail').value = '';
+                    document.getElementById('loginPassword').value = '';
+                }, 1000);
+            } else {
+                messageDiv.className = 'auth-message error';
+                messageDiv.textContent = result.message;
+            }
+        }
+
+        // Handle Register
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+            const messageDiv = document.getElementById('registerMessage');
+
+            if (password !== passwordConfirm) {
+                messageDiv.className = 'auth-message error';
+                messageDiv.textContent = 'As senhas não coincidem';
+                return;
+            }
+
+            const result = auth.register(email, password, name);
+            
+            if (result.success) {
+                messageDiv.className = 'auth-message success';
+                messageDiv.textContent = result.message;
+                setTimeout(() => {
+                    const user = auth.getCurrentUser();
+                    document.getElementById('userName').textContent = user.name;
+                    document.getElementById('auth-page').classList.remove('active');
+                    document.getElementById('home-page').classList.add('active');
+                    document.getElementById('registerName').value = '';
+                    document.getElementById('registerEmail').value = '';
+                    document.getElementById('registerPassword').value = '';
+                    document.getElementById('registerPasswordConfirm').value = '';
+                }, 1000);
+            } else {
+                messageDiv.className = 'auth-message error';
+                messageDiv.textContent = result.message;
+            }
+        }
+    </script>
+</body>
+</html>
