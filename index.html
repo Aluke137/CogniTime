@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CogniTime — Assistente de Estudos</title>
+  <meta name="description" content="CogniTime: gestão de tempo com Pomodoro, revisão espaçada e simulados gerados por IA." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- TELA DE LOGIN -->
+  <div id="login-screen" class="screen login-screen">
+    <div class="login-card">
+      <h1 class="logo">Cogni<span>Time</span></h1>
+      <p class="tagline">Seu assistente de estudos inteligente.</p>
+      <form id="login-form">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" required placeholder="voce@exemplo.com" />
+        <label for="password">Senha</label>
+        <input type="password" id="password" required placeholder="••••••••" minlength="4" />
+        <button type="submit" class="btn-primary">Entrar</button>
+      </form>
+      <p class="hint">Seu e-mail fica salvo neste dispositivo para acessos futuros.</p>
+    </div>
+  </div>
+
+  <!-- APP PRINCIPAL -->
+  <div id="app-screen" class="screen app-screen hidden">
+    <header class="topbar">
+      <h1 class="logo small">Cogni<span>Time</span></h1>
+      <nav class="tabs">
+        <button class="tab active" data-tab="timer">Pomodoro</button>
+        <button class="tab" data-tab="materials">Materiais</button>
+        <button class="tab" data-tab="schedule">Cronograma</button>
+        <button class="tab" data-tab="quiz">Simulado</button>
+        <button class="tab" data-tab="learned">Aprendizado</button>
+      </nav>
+      <div class="user-info">
+        <span id="user-email"></span>
+        <button id="logout-btn" class="btn-ghost">Sair</button>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- POMODORO -->
+      <section id="tab-timer" class="tab-panel active">
+        <div class="panel">
+          <h2>Gerenciador de Tempo</h2>
+          <p class="muted">Método Pomodoro / Time Timer com pausas personalizadas.</p>
+          <div class="timer-display" id="timer-display">25:00</div>
+          <div class="timer-status" id="timer-status">Pronto para focar</div>
+
+          <div class="timer-controls">
+            <button id="start-btn" class="btn-primary">Iniciar</button>
+            <button id="pause-btn" class="btn-secondary" disabled>Pausar</button>
+            <button id="reset-btn" class="btn-ghost">Resetar</button>
+          </div>
+
+          <div class="timer-config">
+            <label>Foco (min) <input type="number" id="focus-min" value="25" min="1" max="120" /></label>
+            <label>Pausa curta (min) <input type="number" id="short-break" value="5" min="1" max="30" /></label>
+            <label>Pausa longa (min) <input type="number" id="long-break" value="15" min="1" max="60" /></label>
+          </div>
+
+          <div class="stats">
+            <div><strong id="sessions-count">0</strong><span>sessões hoje</span></div>
+            <div><strong id="focus-total">0</strong><span>min focados</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MATERIAIS -->
+      <section id="tab-materials" class="tab-panel">
+        <div class="panel">
+          <h2>Seus Materiais</h2>
+          <p class="muted">Adicione PDFs, resumos e anotações. A IA vai transformar em cronograma de revisão espaçada.</p>
+
+          <form id="material-form" class="material-form">
+            <input type="text" id="material-title" placeholder="Título (ex.: Cap. 3 - Funções)" required />
+            <input type="text" id="material-subject" placeholder="Matéria (ex.: Matemática)" required />
+            <textarea id="material-notes" placeholder="Cole seu resumo, anotações ou pontos-chave aqui..." rows="4"></textarea>
+            <input type="file" id="material-file" accept=".pdf,.txt,.md,.doc,.docx" />
+            <button type="submit" class="btn-primary">Adicionar Material</button>
+          </form>
+
+          <ul id="materials-list" class="materials-list"></ul>
+        </div>
+      </section>
+
+      <!-- CRONOGRAMA -->
+      <section id="tab-schedule" class="tab-panel">
+        <div class="panel">
+          <h2>Cronograma de Revisão Espaçada</h2>
+          <p class="muted">Algoritmo baseado em intervalos crescentes (1, 3, 7, 14, 30 dias).</p>
+          <button id="regen-schedule" class="btn-secondary">Recalcular cronograma</button>
+          <div id="schedule-list" class="schedule-list"></div>
+        </div>
+      </section>
+
+      <!-- SIMULADO -->
+      <section id="tab-quiz" class="tab-panel">
+        <div class="panel">
+          <h2>Simulado Inteligente</h2>
+          <p class="muted">A IA gera questões a partir dos seus materiais, corrige em tempo real e explica seus erros.</p>
+
+          <div class="quiz-setup">
+            <label>Material:
+              <select id="quiz-material"></select>
+            </label>
+            <label>Questões:
+              <input type="number" id="quiz-count" value="5" min="1" max="20" />
+            </label>
+            <button id="generate-quiz" class="btn-primary">Gerar Simulado</button>
+          </div>
+
+          <div id="quiz-container" class="quiz-container"></div>
+          <div id="quiz-result" class="quiz-result"></div>
+        </div>
+      </section>
+
+      <!-- APRENDIZADO -->
+      <section id="tab-learned" class="tab-panel">
+        <div class="panel">
+          <h2>O que você já aprendeu</h2>
+          <p class="muted">Cada acerto seu nos simulados fica salvo aqui para revisão futura.</p>
+
+          <div class="stats" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 20px;">
+            <div><strong id="learned-count">0</strong><span>acertos totais</span></div>
+            <div><strong id="learned-unique">0</strong><span>conceitos únicos</span></div>
+            <div><strong id="learned-subjects">0</strong><span>matérias</span></div>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+            <select id="learned-filter" style="flex:1; min-width:200px;">
+              <option value="">Todas as matérias</option>
+            </select>
+            <button id="clear-learned" class="btn-ghost">Limpar histórico</button>
+          </div>
+
+          <div id="learned-list" class="schedule-list"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <small>CogniTime • Projeto Sprint Zero — Análise e Projetos de Sistemas</small>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
